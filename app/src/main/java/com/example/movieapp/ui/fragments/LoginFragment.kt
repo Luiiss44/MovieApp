@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.movieapp.databinding.FragmentLoginBinding
@@ -24,13 +25,18 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Navegar SIN pasar Movie porque no se espera argumento aquí
-                    findNavController().navigate(
-                        LoginFragmentDirections.actionLoginFragmentToMovieListFragment()
-                    )
+
+            if (email.isNotBlank() && password.isNotBlank()) {
+                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToMovieListFragment())
+                    } else {
+                        Toast.makeText(context, "Error al iniciar sesión", Toast.LENGTH_SHORT).show()
+                    }
                 }
+            } else {
+                Toast.makeText(context, "Completa todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
 
